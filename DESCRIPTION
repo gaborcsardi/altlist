@@ -4,10 +4,12 @@ Version: 0.0.0.9000
 Author: Gábor Csárdi
 Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
 Description: Test Package for 'ALTREP' Lists
-License: MIT + file LICENSE
+License: GPL-3
 LazyData: true
 URL: https://github.com/gaborcsardi/altlist#readme
 BugReports: https://github.com/gaborcsardi/altlist/issues
 RoxygenNote: 6.1.1
 Suggests: 
     testthat
+Encoding: UTF-8
+Depends: R (>= 3.7.0)

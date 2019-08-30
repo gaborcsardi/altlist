@@ -1,11 +1,16 @@
+---
+output: github_document
+---
 
-```{r, setup, echo = FALSE, message = FALSE}
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
 knitr::opts_chunk$set(
+  collapse = TRUE,
   comment = "#>",
-  tidy = FALSE,
-  error = FALSE,
-  fig.width = 8,
-  fig.height = 8)
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
 ```
 
 # altlist
@@ -13,13 +18,13 @@ knitr::opts_chunk$set(
 > Test Package for 'ALTREP' Lists
 
 [![Linux Build Status](https://travis-ci.org/gaborcsardi/altlist.svg?branch=master)](https://travis-ci.org/gaborcsardi/altlist)
-
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/github/gaborcsardi/altlist?svg=true)](https://ci.appveyor.com/project/gaborcsardi/altlist)
 [![](http://www.r-pkg.org/badges/version/altlist)](http://www.r-pkg.org/pkg/altlist)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/altlist)](http://www.r-pkg.org/pkg/altlist)
 
 
-Test Package for 'ALTREP' Lists
+Test Package for 'ALTREP' Lists. It needs this patch:
+https://github.com/gaborcsardi/r-source/pull/4
 
 ## Installation
 
@@ -33,6 +38,18 @@ devtools::install_github("gaborcsardi/altlist")
 library(altlist)
 ```
 
+## Iterate over the rows of a data frame
+
+```{r}
+for (el in rowwise(mtcars)) {
+  print(paste0("row #", el$.idx))
+}
+```
+
+```{r}
+lapply(rowwise(mtcars), function(elmt) { elmt$wt })
+```
+
 ## License
 
-MIT + file LICENSE © 
+MIT © RStudio
