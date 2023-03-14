@@ -1,4 +1,4 @@
 /r-packages
 /README.html
-/src/altlist.o
+/src/*.o
 /src/altlist.so
