@@ -27,6 +27,11 @@ void simple_setelt(SEXP x, R_xlen_t i, SEXP v) {
   SET_VECTOR_ELT(data, i, v);
 }
 
+const void *simple_dataptr_or_null(SEXP x) {
+  SEXP data = R_altrep_data1(x);
+  return DATAPTR_OR_NULL(data);
+}
+
 Rboolean simple_inspect(SEXP x, int pre, int deep, int pvec,
                         void (*inspect_subtree)(SEXP, int, int, int)) {
   SEXP data = R_altrep_data1(x);

@@ -18,3 +18,15 @@ altlist <- function(x) {
 is_altrep <- function(x) {
   .Call(c_is_altrep, x)
 }
+
+iterate <- function(x, fun, env = parent.frame()) {
+  .Call(c_list_iterate, x, fun, env)
+}
+
+no_dataptr <- function(x) {
+  .Call(c_no_dataptr, x)
+}
+
+dataptr_ro <- function(x) {
+  .call(c_dataptr_ro, x)
+}
