@@ -23,10 +23,20 @@ iterate <- function(x, fun, env = parent.frame()) {
   .Call(c_list_iterate, x, fun, env)
 }
 
+iterate_dataptr_ro <- function(x, fun, env = parent.frame()) {
+  .Call(c_iterate_dataptr_ro, x, fun, env)
+}
+
 no_dataptr <- function(x) {
   .Call(c_no_dataptr, x)
 }
 
 dataptr_ro <- function(x) {
-  .call(c_dataptr_ro, x)
+  .Call(c_dataptr_ro, x)
+}
+
+# Modifies list element in place. Only for testing purposes!
+
+set_elt <- function(x, idx, val) {
+  .Call(c_set_elt, x, as.integer(idx) - 1L, val)
 }

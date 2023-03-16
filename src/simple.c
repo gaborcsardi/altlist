@@ -32,6 +32,15 @@ const void *simple_dataptr_or_null(SEXP x) {
   return DATAPTR_OR_NULL(data);
 }
 
+void *simple_dataptr(SEXP x, Rboolean writeable) {
+  SEXP data = R_altrep_data1(x);
+  if (writeable) {
+    return DATAPTR(data);
+  } else {
+    return (void*) DATAPTR_RO(data);
+  }
+}
+
 Rboolean simple_inspect(SEXP x, int pre, int deep, int pvec,
                         void (*inspect_subtree)(SEXP, int, int, int)) {
   SEXP data = R_altrep_data1(x);

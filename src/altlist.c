@@ -20,12 +20,12 @@ SEXP list_iterate(SEXP x, SEXP fun, SEXP env) {
   SEXP res = PROTECT(Rf_allocVector(VECSXP, len));
   SEXP *ptr = (SEXP*) DATAPTR_OR_NULL(x);
   if (ptr == NULL) {
-    REprintf("No dataptr :(\n");
+    Rprintf("No dataptr :(\n");
     for (i = 0; i < len; i++) {
       SET_VECTOR_ELT(res, i, Rf_eval(Rf_lang2(fun, VECTOR_ELT(x, i)), env));
     }
   } else {
-    REprintf("Got dataptr :)\n");
+    Rprintf("Got dataptr :)\n");
     const SEXP *end = ptr + len;
     for (i = 0; ptr < end; i++, ptr++) {
       SET_VECTOR_ELT(res, i, Rf_eval(Rf_lang2(fun, *ptr), env));
@@ -48,13 +48,33 @@ SEXP dataptr_ro(SEXP x) {
   return R_NilValue;
 }
 
+SEXP iterate_dataptr_ro(SEXP x, SEXP fun, SEXP env) {
+  const SEXP *ptr = (const SEXP*) DATAPTR_RO(x);
+  R_xlen_t i, len = XLENGTH(x);
+  SEXP res = PROTECT(Rf_allocVector(VECSXP, len));
+  const SEXP *end = ptr + len;
+  for (i = 0; ptr < end; i++, ptr++) {
+    SET_VECTOR_ELT(res, i, Rf_eval(Rf_lang2(fun, *ptr), env));
+  }
+
+  UNPROTECT(1);
+  return res;
+}
+
+SEXP set_elt(SEXP x, SEXP idx, SEXP val) {
+  SET_VECTOR_ELT(x, INTEGER(idx)[0], val);
+  return x;
+}
+
 static const R_CallMethodDef callMethods[]  = {
-  { "is_altrep",    (DL_FUNC) &is_altrep,    1 },
-  { "altlist"  ,    (DL_FUNC) &make_simple,  1 },
-  { "rowwise",      (DL_FUNC) &make_rowwise, 5 },
-  { "list_iterate", (DL_FUNC) &list_iterate, 3 },
-  { "no_dataptr",   (DL_FUNC) &no_dataptr,   1 },
-  { "dataptr_ro",   (DL_FUNC) &dataptr_ro,   1 },
+  { "is_altrep",          (DL_FUNC) &is_altrep,          1 },
+  { "altlist",            (DL_FUNC) &make_simple,        1 },
+  { "rowwise",            (DL_FUNC) &make_rowwise,       5 },
+  { "list_iterate",       (DL_FUNC) &list_iterate,       3 },
+  { "no_dataptr",         (DL_FUNC) &no_dataptr,         1 },
+  { "dataptr_ro",         (DL_FUNC) &dataptr_ro,         1 },
+  { "iterate_dataptr_ro", (DL_FUNC) &iterate_dataptr_ro, 3 },
+  { "set_elt",            (DL_FUNC) &set_elt,            3 },
   { NULL, NULL, 0 }
 };
 
@@ -66,6 +86,7 @@ SEXP simple_elt(SEXP x, R_xlen_t i);
 void simple_setelt(SEXP x, R_xlen_t i, SEXP v);
 Rboolean simple_inspect(SEXP x, int pre, int deep, int pvec,
                         void (*inspect_subtree)(SEXP, int, int, int));
+void *simple_dataptr(SEXP x, Rboolean writeable);
 const void *simple_dataptr_or_null(SEXP x);
 
 R_xlen_t rowwise_length(SEXP x);
@@ -82,6 +103,7 @@ void R_init_altlist(DllInfo *dll) {
   R_set_altlist_Elt_method(simple_class, simple_elt);
   R_set_altlist_Set_elt_method(simple_class, simple_setelt);
   R_set_altrep_Inspect_method(simple_class, simple_inspect);
+  R_set_altvec_Dataptr_method(simple_class, simple_dataptr);
   R_set_altvec_Dataptr_or_null_method(simple_class, simple_dataptr_or_null);
   /* Duplicate? */
 
